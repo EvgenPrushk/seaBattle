@@ -1,3 +1,1 @@
-class PreparationScene extends Preparation {
-    
-}
+class PreparationScene extends Scene {}
