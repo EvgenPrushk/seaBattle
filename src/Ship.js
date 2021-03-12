@@ -2,9 +2,10 @@ class Ship {
     size = null;
     direction = null;
     killed = false;
+    // startX = null; 
+    // startY = null;
     
     constructor () {
-        this.size = size;
-        this.direction = direction;
+       
     }
 }
