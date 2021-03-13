@@ -63,4 +63,13 @@ class BattlefieldView extends Battlefield {
       cell.append(marker);
     }
   }
+  // пример возможностей ООП - расширение класса
+  addShip(ship) {
+    if (!super.addShip(ship)) {
+      return false;
+    }
+
+    this.dock.append(ship.div);
+    return true;
+  }
 }

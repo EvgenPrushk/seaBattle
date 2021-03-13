@@ -12,8 +12,12 @@ const shipDatas = [
 ];
 class PreparationScene extends Scene {
   init() {
+    // диструктуризация
+    const { player } = this.app;
+
     for (const { size, direction, startX, startY } of shipDatas) {
       const ship = new ShipView(size, direction, startX, startY);
+      player.addShip(ship);
     }
   }
 

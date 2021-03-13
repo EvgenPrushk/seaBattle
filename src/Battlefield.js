@@ -4,7 +4,7 @@ class Battlefield {
 
   addShip(ship) {
     // если корабль существет, то мы его не добавляем
-    if (ship.includes(ship)) {
+    if (this.ships.includes(ship)) {
       return false;
     }
     // иначе мы его дабавляем
@@ -14,16 +14,18 @@ class Battlefield {
 
   removeShip(ship) {
     // если корабль нет, то мы его не можем удалить
-    if (!ship.includes(ship)) {
+    if (!this.ships.includes(ship)) {
       return false;
     }
+    const index = this.ships.indexOf(ship);
     this.ships.splice(index, 1);
     return true;
   }
 
   removeAllShip() {
     // создаем копию массива всех кораблей
-    const ship = this.ships.slice();
+    const ships = this.ships.slice();
+
     for (const ship of ships) {
       //убираем корабль с поля
       this.removeShip(ship);
