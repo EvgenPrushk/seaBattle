@@ -26,7 +26,9 @@ class PreparationScene extends Scene {
 	}
 
 	start() {
-		console.log("PreparationScene start");
+		// достаем player с помощью диструктуризации
+		const {player} = this.app;
+		console.log(player.matrix);
 	}
 
 	update() {
