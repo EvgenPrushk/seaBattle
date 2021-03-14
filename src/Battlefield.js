@@ -1,49 +1,49 @@
 class Battlefield {
-  ships = [];
-  shots = [];
+	ships = [];
+	shots = [];
 
-  addShip(ship) {
-    // если корабль существет, то мы его не добавляем
-    if (this.ships.includes(ship)) {
-      return false;
-    }
-    // иначе мы его дабавляем
-    this.ships.push(ship);
-    return true;
-  }
+	addShip(ship) {
+		// если у нас коробль есть на поле, то мы не чего не делаем
+		if (this.ships.includes(ship)) {
+			return false;
+		}
+		// иначе мы его добавляем
+		this.ships.push(ship);
+		return true;
+	}
 
-  removeShip(ship) {
-    // если корабль нет, то мы его не можем удалить
-    if (!this.ships.includes(ship)) {
-      return false;
-    }
-    const index = this.ships.indexOf(ship);
-    this.ships.splice(index, 1);
-    return true;
-  }
+	removeShip(ship) {
+		// если этого коробля нет
+		if (!this.ships.includes(ship)) {
+			return false;
+		}
+		// процесс удаления коробля по индексу
+		const index = this.ships.indexOf(ship);
+		this.ships.splice(index, 1);
+		return true;
+	}
 
-  removeAllShip() {
-    // создаем копию массива всех кораблей
-    const ships = this.ships.slice();
+	removeAllShips() {
+		const ships = this.ships.slice();
 
-    for (const ship of ships) {
-      //убираем корабль с поля
-      this.removeShip(ship);
-    }
-    // получаем их колличество
-    return ships.length;
-  }
+		for (const ship of ships) {
+			this.removeShip(ship);
+		}
 
-  addShot() {}
-  removeShot() {}
-  removeAllShots() {
-    // создаем копию массива всех выстрелов
-    const shots = this.shots.slice();
-    for (const shot of shots) {
-      //убираем выстрелы
-      this.removeShip(shot);
-    }
-    // получаем их колличество
-    return shots.length;
-  }
+		return ships.length;
+	}
+
+	addShot() {}
+
+	removeShot() {}
+
+	removeAllShots() {
+		const shots = this.shots.slice();
+
+		for (const shot of shots) {
+			this.removeShot(shot);
+		}
+
+		return shots.length;
+	}
 }

@@ -1,78 +1,82 @@
 class Mouse {
-  // находиться ли мышка над элементом
-  element = null;
-  under = false;
-  pUnder = false;
-  // координаты мыши
-  x = null;
-  y = null;
+	element = null;
 
-  pX = null;
-  pY = null;
-  // прожата ли левая клавиша мыши
-  left = false;
-  pLeft = false;
-  // прожата ли колесико клавиша мыши
-  delta = false;
-  pDelta = false;
+	under = false;
+	pUnder = false;
 
-  constructor(element) {
-    this.element = element;
+	x = null;
+	y = null;
 
-    const update = (e) => {
-      this.x = e.clientX;
-      this.y = e.clientY;
-      this.delta = 0;
-      this.under = true;
-    };
-    element.addEventListener("mousemove", (e) => {
-      this.tick();
-      update(e);
-    });
+	pX = null;
+	pY = null;
 
-    element.addEventListener("mouseenter", (e) => {
-      this.tick();
-      update(e);
-    });
+	left = false;
+	pLeft = false;
 
-    element.addEventListener("mouseleave", (e) => {
-      this.tick();
-      update(e);
-      this.under = false;
-    });
+	delta = 0;
+	pDelta = 0;
 
-    element.addEventListener("mousedown", (e) => {
-      this.tick();
-      update(e);
+	constructor(element) {
+		this.element = element;
 
-      if (e.button === 0) {
-        this.left = true;
-      }
-    });
+		const update = (e) => {
+			this.x = e.clientX;
+			this.y = e.clientY;
+			this.delta = 0;
+			this.under = true;
+		};
 
-    element.addEventListener("mouseup", (e) => {
-      this.tick();
-      update(e);
+		element.addEventListener("mousemove", (e) => {
+			this.tick();
+			update(e);
+		});
 
-      if (e.button === 0) {
-        this.left = false;
-      }
-    });
-    element.addEventListener("wheel", (e) => {
-      this.tick();
-      this.x = e.clientX;
-      this.y = e.clientY;
-      this.under = true;
-      this.delta = e.deltaY > 0 ? 1 : -1;
-    });
-  }
+		element.addEventListener("mouseenter", (e) => {
+			this.tick();
+			update(e);
+		});
 
-  tick() {
-    this.pX =this.x;
-    this.pY =this.y;
+		element.addEventListener("mouseleave", (e) => {
+			this.tick();
+			update(e);
 
-    this.pUnder =this.under;
-    this.pLeft =this.left;
-    this.pDelta =this.delta;
-  }
+			this.under = false;
+		});
+
+		element.addEventListener("mousedown", (e) => {
+			this.tick();
+			update(e);
+
+			if (e.button === 0) {
+				this.left = true;
+			}
+		});
+
+		element.addEventListener("mouseup", (e) => {
+			this.tick();
+			update(e);
+
+			if (e.button === 0) {
+				this.left = false;
+			}
+		});
+
+		element.addEventListener("wheel", (e) => {
+			this.tick();
+
+			this.x = e.clientX;
+			this.y = e.clientY;
+			this.delta = e.deltaY > 0 ? 1 : -1;
+			this.under = true;
+		});
+	}
+
+	tick() {
+		this.pX = this.x;
+		this.pY = this.y;
+		this.pUnder = this.under;
+		this.pLeft = this.left;
+		this.pDelta = this.delta;
+		this.delta = 0;
+	}
 }

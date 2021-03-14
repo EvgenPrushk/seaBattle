@@ -1,63 +1,60 @@
 class Application {
-  mouse = null;
-  player = null;
-  opponent = null;
+	mouse = null;
 
-  scenes = {};
-  activeScene = null;
+	player = null;
+	opponent = null;
 
-  constructor(scenes = {}) {
-    const mouse = new Mouse(document.body);
-    const player = new BattlefieldView();
-    const opponent = new BattlefieldView();
+	scenes = {};
+	activeScene = null;
 
-    Object.assign(this, { mouse, player, opponent });
-    // монтирование игровых полей
-    document.querySelector('[data-side="player"]').append(player.root);
-    document.querySelector('[data-side="opponent"]').append(opponent.root);
+	constructor(scenes = {}) {
+		const mouse = new Mouse(document.body);
+		const player = new BattlefieldView();
+		const opponent = new BattlefieldView();
 
-    // Object.entries(scenes) - превращаем объект в формат entries
-    // для работы с данными, как с массивом
-    //[sceneName, sceneClass] -диструктуризация и записываю их в sceneName и sceneClass
-    for (const [sceneName, sceneClass] of Object.entries(scenes)) {
-      //  генерируем сцены передавая имя и ссылку на текущее приложение
-      this.scenes[sceneName] = new sceneClass(sceneName, this);
-    }
-    // Object.value(this.scenes) создаем массив значений этих scene
-    for (const scene of Object.values(this.scenes)) {
-      scene.init();
-    }
+		Object.assign(this, { mouse, player, opponent });
 
-    requestAnimationFrame(() => this.tick());
-  }
-  // обнавление экрана
-  tick() {
-    requestAnimationFrame(() => this.tick);
-    // если есть активная сцена, то мы вызываем функцию update()
-    if (this.activeScene) {
-      this.activeScene.update();
-    }
-    this.mouse.tick();
-  }
-  // вызов сцены
-  start(sceneName) {
-    if (this.activeScene && this.activeScene.name === sceneName) {
-      return false;
-    }
-    // если у нас  такая сцена
-    if (!this.scenes.hasOwnProperty(sceneName)) {
-      return false;
-    }
+		document.querySelector('[data-side="player"]').append(player.root);
+		document.querySelector('[data-side="opponent"]').append(opponent.root);
 
-    // если есть активная сцена, то мы ее останавливаем
-    if (this.activeScene) {
-      this.activeScene.stop();
-    }
-    // берем и запускаем новую сцену
-    const scene = this.scenes[sceneName];
-    this.activeScene = scene;
-    scene.start();
+		for (const [sceneName, SceneClass] of Object.entries(scenes)) {
+			this.scenes[sceneName] = new SceneClass(sceneName, this);
+		}
 
-    return true;
-  }
+		for (const scene of Object.values(this.scenes)) {
+			scene.init();
+		}
+
+		requestAnimationFrame(() => this.tick());
+	}
+
+	tick() {
+		requestAnimationFrame(() => this.tick());
+
+		if (this.activeScene) {
+			this.activeScene.update();
+		}
+
+		this.mouse.tick();
+	}
+
+	start(sceneName) {
+		if (this.activeScene && this.activeScene.name === sceneName) {
+			return false;
+		}
+
+		if (!this.scenes.hasOwnProperty(sceneName)) {
+			return false;
+		}
+
+		if (this.activeScene) {
+			this.activeScene.stop();
+		}
+
+		const scene = this.scenes[sceneName];
+		this.activeScene = scene;
+		scene.start();
+
+		return true;
+	}
 }
