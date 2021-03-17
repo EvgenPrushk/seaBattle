@@ -19,6 +19,8 @@ class Battlefield {
           x,
           y,
           ship: null,
+          // по умолчанию свободное поле
+          free: true,
         };
         row.push(item);
       }
@@ -31,27 +33,28 @@ class Battlefield {
         continue;
       }
 
+      const { x, y } = ship;
+      const dx = ship.direction === "row";
+      const dy = ship.direction === "column";
+      // размещение коробля
+      for (let i = 0; i < ship.size; i++) {
+        const cx = x + dx * i;
+        const cy = y + dy * i;
+
+        const item = matrix[cy][cx];
+        item.ship = ship;
+      }
       if (ship.direction === "row") {
-        const { x, y } = ship;
-
-        for (let i = 0; i < ship.size; i++) {
-          //   const cx = x + i;
-          //   const cy = y + i;
-
-          //   if (this.inField(cx, cy)) {
-          const item = matrix[y][x + i];
-          item.ship = ship;
-          //   }
-        }
-      } else {
-        for (let i = 0; i < ship.size; i++) {
-          const item = matrix[y + i][x];
-          item.ship = ship;
+        for (let y = ship.y - 1; y < ship.y + 2; y++) {
+          for (let x = ship.x - 1; x < ship.x + ship.size; x++) {
+            
+          }
         }
       }
     }
     this.#matrix = matrix;
     this.#changed = false;
+
     return this.#matrix;
   }
   // проверяет лежат ли x, y в пределах игрового поля
