@@ -1,86 +1,105 @@
 class BattlefieldView extends Battlefield {
-	root = null;
-	table = null;
-	dock = null;
-	polygon = null;
+  root = null;
+  table = null;
+  dock = null;
+  polygon = null;
 
-	cells = [];
+  cells = [];
 
-	constructor() {
-		super();
+  constructor() {
+    super();
 
-		const root = document.createElement("div");
-		root.classList.add("battlefield");
+    const root = document.createElement("div");
+    root.classList.add("battlefield");
 
-		const table = document.createElement("table");
-		table.classList.add("battlefield-table");
+    const table = document.createElement("table");
+    table.classList.add("battlefield-table");
 
-		const dock = document.createElement("div");
-		dock.classList.add("battlefield-dock");
+    const dock = document.createElement("div");
+    dock.classList.add("battlefield-dock");
 
-		const polygon = document.createElement("div");
-		polygon.classList.add("battlefield-polygon");
+    const polygon = document.createElement("div");
+    polygon.classList.add("battlefield-polygon");
 
-		Object.assign(this, { root, table, dock, polygon });
-		root.append(table, dock, polygon);
+    Object.assign(this, { root, table, dock, polygon });
+    root.append(table, dock, polygon);
 
-		for (let y = 0; y < 10; y++) {
-			const row = [];
-			const tr = document.createElement("tr");
-			tr.classList.add("battlefield-row");
-			tr.dataset.y = y;
+    for (let y = 0; y < 10; y++) {
+      const row = [];
+      const tr = document.createElement("tr");
+      tr.classList.add("battlefield-row");
+      tr.dataset.y = y;
 
-			for (let x = 0; x < 10; x++) {
-				const td = document.createElement("td");
-				td.classList.add("battlefield-item");
-				Object.assign(td.dataset, { x, y });
+      for (let x = 0; x < 10; x++) {
+        const td = document.createElement("td");
+        td.classList.add("battlefield-item");
+        Object.assign(td.dataset, { x, y });
 
-				tr.append(td);
-				row.push(td);
-			}
+        tr.append(td);
+        row.push(td);
+      }
 
-			table.append(tr);
-			this.cells.push(row);
-		}
+      table.append(tr);
+      this.cells.push(row);
+    }
 
-		for (let x = 0; x < 10; x++) {
-			const cell = this.cells[0][x];
-			const marker = document.createElement("div");
+    for (let x = 0; x < 10; x++) {
+      const cell = this.cells[0][x];
+      const marker = document.createElement("div");
 
-			marker.classList.add("marker", "marker-column");
-			marker.textContent = "АБВГДЕЖЗИК"[x];
+      marker.classList.add("marker", "marker-column");
+      marker.textContent = "АБВГДЕЖЗИК"[x];
 
-			cell.append(marker);
-		}
+      cell.append(marker);
+    }
 
-		for (let y = 0; y < 10; y++) {
-			const cell = this.cells[y][0];
-			const marker = document.createElement("div");
+    for (let y = 0; y < 10; y++) {
+      const cell = this.cells[y][0];
+      const marker = document.createElement("div");
 
-			marker.classList.add("marker", "marker-row");
-			marker.textContent = y + 1;
+      marker.classList.add("marker", "marker-row");
+      marker.textContent = y + 1;
 
-			cell.append(marker);
-		}
+      cell.append(marker);
+    }
+  }
+
+  addShip(ship, x, y) {
+    if (!super.addShip(ship, x, y)) {
+      return false;
+    }
+
+    this.dock.append(ship.div);
+
+    if (ship.placed) {
+      // меняем его стили и помещаем в ту ячейку где он находиться
+      const cell = this.cells[y][x];
+      // за счет диструктуризация
+      const cellRect = cell.getBoundingClientRect();
+      const rootRect = this.root.getBoundingClientRect();
+
+      ship.div.style.left = `${cellRect.left - rootRect.left}px`;
+      ship.div.style.top = `${cellRect.top - rootRect.top}px`;
+    } else {
+      ship.div.style.left = `${ship.startX}px`;
+      ship.div.style.top = `${ship.startY}px`;
+    }
+
+    return true;
+  }
+
+  removeShip(ship) {
+    if (!super.removeShip(ship)) {
+      return false;
+    }
+	// убеждаемся, что корабль находиться в доме
+	if (Array.prototype.includes.call(this.dock.children, ship.div)) {
+		ship.div.remove()
 	}
+	return true;
+  }
 
-	addShip(ship) {
-		if (!super.addShip(ship)) {
-			return false;
-		}
-
-		this.dock.append(ship.div);
-
-		if (ship.placed) {
-		} else {
-			ship.div.style.left = `${ship.startX}px`;
-			ship.div.style.top = `${ship.startY}px`;
-		}
-
-		return true;
-	}
-
-	isUnder(point) {
-		return isUnderPoint(point, this.root);
-	}
+  isUnder(point) {
+    return isUnderPoint(point, this.root);
+  }
 }

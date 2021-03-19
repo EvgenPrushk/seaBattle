@@ -32,7 +32,7 @@ class Battlefield {
       if (!ship.placed) {
         continue;
       }
-
+      // забираем координаты через диструктуризацию у коробля
       const { x, y } = ship;
       const dx = ship.direction === "row";
       const dy = ship.direction === "column";
@@ -44,14 +44,18 @@ class Battlefield {
         const item = matrix[cy][cx];
         item.ship = ship;
       }
-      if (ship.direction === "row") {
-        for (let y = ship.y - 1; y < ship.y + 2; y++) {
-          for (let x = ship.x - 1; x < ship.x + ship.size; x++) {
-            
+
+      for (let y = ship.y - 1; y < ship.y + ship.size * dy + dx + 1; y++) {
+        for (let x = ship.x - 1; x < ship.x + ship.size * dx + dy + 1; x++) {
+          if (this.inField(x, y)) {
+            const item = matrix[y][x];
+
+            item.free = false;
           }
         }
       }
     }
+
     this.#matrix = matrix;
     this.#changed = false;
 
@@ -60,7 +64,7 @@ class Battlefield {
   // проверяет лежат ли x, y в пределах игрового поля
   inField(x, y) {
     const isNumber = (n) =>
-      parseInt(n) !== n && isNaN(n) && ![Infinity, -Infinity].includes(n);
+      parseInt(n) === n && !isNaN(n) && ![Infinity, -Infinity].includes(n);
 
     if (!isNumber(x) || !isNumber(y)) {
       return false;
@@ -69,13 +73,43 @@ class Battlefield {
     return 0 <= x && x < 10 && 0 <= y && y < 10;
   }
 
-  addShip(ship) {
+  addShip(ship, x, y) {
     // если у нас коробль есть на поле, то мы не чего не делаем
     if (this.ships.includes(ship)) {
       return false;
     }
     // иначе мы его добавляем
     this.ships.push(ship);
+
+    if (this.inField(x, y)) {
+      // const { x, y } = ship;
+      const dx = ship.direction === "row";
+      const dy = ship.direction === "column";
+
+      let placed = true;
+      // размещение коробля
+      for (let i = 0; i < ship.size; i++) {
+        const cx = x + dx * i;
+        const cy = y + dy * i;
+        // проверка лежит ли корабль на игровом поле
+        if (!this.inField(cx, cy)) {
+          placed = false;
+          break;
+        }
+        const item = this.matrix[cy][cx];
+        // пересекается ли наш корабль с другими короблями
+        if (!item.free) {
+          placed = false;
+          break;
+        }
+      }
+      if (placed) {
+        //выставляем кораблю координаты
+        Object.assign(ship, { x, y });
+      }
+    }
+    // подымаем флаг, потому что у нас изменилось состояние приложения
+    this.#changed = true;
     return true;
   }
 
@@ -87,6 +121,11 @@ class Battlefield {
     // процесс удаления коробля по индексу
     const index = this.ships.indexOf(ship);
     this.ships.splice(index, 1);
+
+    ship.x = null;
+    ship.y = null;
+
+    this.#changed = true;
     return true;
   }
 
@@ -100,9 +139,13 @@ class Battlefield {
     return ships.length;
   }
 
-  addShot() {}
+  addShot() {
+    this.#changed = true;
+  }
 
-  removeShot() {}
+  removeShot() {
+    this.#changed = true;
+  }
 
   removeAllShots() {
     const shots = this.shots.slice();
