@@ -81,6 +81,7 @@ class BattlefieldView extends Battlefield {
       ship.div.style.left = `${cellRect.left - rootRect.left}px`;
       ship.div.style.top = `${cellRect.top - rootRect.top}px`;
     } else {
+      ship.setDirection("row");
       ship.div.style.left = `${ship.startX}px`;
       ship.div.style.top = `${ship.startY}px`;
     }
@@ -92,11 +93,11 @@ class BattlefieldView extends Battlefield {
     if (!super.removeShip(ship)) {
       return false;
     }
-	// убеждаемся, что корабль находиться в доме
-	if (Array.prototype.includes.call(this.dock.children, ship.div)) {
-		ship.div.remove()
-	}
-	return true;
+    // убеждаемся, что корабль находиться в доме
+    if (Array.prototype.includes.call(this.dock.children, ship.div)) {
+      ship.div.remove();
+    }
+    return true;
   }
 
   isUnder(point) {

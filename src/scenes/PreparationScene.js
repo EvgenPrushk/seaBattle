@@ -26,14 +26,23 @@ class PreparationScene extends Scene {
   }
 
   start() {
-    // достаем player с помощью диструктуризации
     const { player } = this.app;
 
-    // ставим корабль на доску
-    player.ships[0].x = 1;
-    player.ships[0].y = 1;
-    console.log(player.matrix);
-    console.log(player);
+    player.randomize(ShipView);
+
+    for (let i = 0; i < 10; i++) {
+      const ship = player.ships[i];
+      ship.startX = shipDatas[i].startX;
+      ship.startY = shipDatas[i].startY;
+    }
+
+    document
+      .querySelectorAll(".app-actions")
+      .forEach((element) => element.classList.add("hidden"));
+
+    document
+      .querySelector('[data-scene="preparation"]')
+      .classList.remove("hidden");
   }
 
   update() {
@@ -89,16 +98,15 @@ class PreparationScene extends Scene {
         player.removeShip(ship);
         player.addShip(ship, x, y);
       } else {
-		   player.removeShip(ship);
+        player.removeShip(ship);
         player.addShip(ship);
-	  }
+      }
     }
 
     // Врощаение
-	if (this.draggedShip && mouse.delta) {
-		this.draggedShip.toggleDirection();
-	}
-
+    if (this.draggedShip && mouse.delta) {
+      this.draggedShip.toggleDirection();
+    }
   }
 
   stop() {
