@@ -175,6 +175,7 @@ class PreparationScene extends Scene {
 
   // Начала игры компьютера
   startComputer(level) {
-    console.log(level);
+    
+    this.app.start('computer');
   }
 }
