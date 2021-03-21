@@ -61,6 +61,22 @@ class Battlefield {
 
     return this.#matrix;
   }
+
+  get complete() {
+    // проверяем по колличеству
+    if (this.ships.length !== 10) {
+      return false;
+    }
+    // проверка по расположению
+    for (const ship of this.ships) {
+      if (!ship.placed) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   // проверяет лежат ли x, y в пределах игрового поля
   inField(x, y) {
     const isNumber = (n) =>
