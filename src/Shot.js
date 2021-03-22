@@ -3,7 +3,7 @@ class Shot {
   y = null;
   variant = null;
 
-  constructor(x, y, variant) {
-      Object.assign(this, {x, y, variant});
+  constructor(x, y, variant = "miss") {
+    Object.assign(this, { x, y, variant });
   }
 }
