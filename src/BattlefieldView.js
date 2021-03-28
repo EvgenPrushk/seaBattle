@@ -103,4 +103,13 @@ class BattlefieldView extends Battlefield {
   isUnder(point) {
     return isUnderPoint(point, this.root);
   }
+
+  addShot(shot) {
+    if (!super.addShot(shot)) {
+      return false;
+    }
+    // добавляем визуальную часть
+    this.polygon.append(shot.div);
+    return true;
+  }
 }

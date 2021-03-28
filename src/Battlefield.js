@@ -168,7 +168,7 @@ class Battlefield {
   }
   // метод отвечает за выстрелы
   addShot(shot) {
-    // проверяем координаты всех существующих выстрелов
+    // проверяем был ли такой выстрео
     for (const { x, y } of this.shots) {
       if (x === shot.x && y === shot.y) {
         return false;
@@ -176,15 +176,18 @@ class Battlefield {
     }
     // добавляем выстрел в общий стек всех выстрелов
     this.shots.push(shot);
-    this.polygon.append(shot.div);
+  
+    // фиксируем измение в экземпляре
     this.#changed = true;
-
+    // берем матрицу и учитываем выстрел
     const matrix = this.matrix;
+    // достаем коодинаты выстрела
     const { x, y } = shot;
     // если мы попали
     if (matrix[y][x].ship) {
       shot.setVariant("shot-wounded");
 
+      // проверяем, что карабль по которому мы стреля не убит
       const { ship } = matrix[y][x];
       const dx = ship.direction === "row";
       const dy = ship.direction === "column";
@@ -195,15 +198,16 @@ class Battlefield {
         const cx = ship.x + dx * i;
         const cy = ship.y + dy * i;
         const item = matrix[cy][cx];
-
+        // если есть не раненные палубы, то корабль жив
         if (!item.wounded) {
           killed = false;
           break;
         }
       }
-
+      // если все палубы ранены, то карабль убит
       if (killed) {
         ship.killed = true;
+        shot.setVariant("killed");
       }
     }
 
