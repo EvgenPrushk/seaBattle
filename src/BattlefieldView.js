@@ -110,6 +110,14 @@ class BattlefieldView extends Battlefield {
     }
     // добавляем визуальную часть
     this.polygon.append(shot.div);
+    // найдем ячейку куда мы поставили
+    const cell = this.cells[shot.y][shot.x];
+    // найдем левый и правый кран ячейки
+    const cellRect = cell.getBoundingClientRect();
+    // найдем левый и правый кран root
+    const rootRect = this.root.getBoundingClientRect();
+    shot.div.style.left = `${cellRect.left - rootRect.left}px`;
+    shot.div.style.top = `${cellRect.top - rootRect.top}px`;
     return true;
   }
 }
