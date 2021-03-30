@@ -1,21 +1,33 @@
 function getRandomBetween(min, max) {
-	return min + Math.floor(Math.random() * (max - min + 1));
+  return min + Math.floor(Math.random() * (max - min + 1));
 }
 
 function getRandomFrom(...args) {
-	const index = Math.floor(Math.random() * args.length);
-	return args[index];
+  const index = Math.floor(Math.random() * args.length);
+  return args[index];
 }
 
 function isUnderPoint(point, element) {
-	const { left, top, width, height } = element.getBoundingClientRect();
-	const { x, y } = point;
+  const { left, top, width, height } = element.getBoundingClientRect();
+  const { x, y } = point;
 
-	return left <= x && x <= left + width && top <= y && y <= top + height;
+  return left <= x && x <= left + width && top <= y && y <= top + height;
 }
 // это функция навешивает обрабочик события и возвращает
 // функцию, которая снимает этот обрабочик события
-function addEventListener (element, ...args) {
-	element.addEventListener(...args)
-	return () => element.removeEventListener(...args);
+function addEventListener(element, ...args) {
+  element.addEventListener(...args);
+  return () => element.removeEventListener(...args);
 }
+
+function getSeveralRandom(array, size) {
+	if(size > array.length){
+		size = array.length;
+	}
+	const result = []
+
+	const indexs = Array
+
+	return resultl;
+}
+// 01-00-51
