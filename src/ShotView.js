@@ -25,10 +25,10 @@ class ShotView extends Shot {
       this.div.textContent = "*";
     } else if (this.variant === "wounded") {
       this.div.classList.add("shot-wounded");
-    } else if (this.variant === "killed") {
-      this.div.classList.add("shot-killed");
+    } else if (this.variant === "killed") {      
+      this.div.classList.add("shot-wounded", "shot-killed");
     }
-
+   
     return true;
   }
 }

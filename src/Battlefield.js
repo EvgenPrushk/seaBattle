@@ -176,7 +176,7 @@ class Battlefield {
     }
     // добавляем выстрел в общий стек всех выстрелов
     this.shots.push(shot);
-  
+
     // фиксируем измение в экземпляре
     this.#changed = true;
     // берем матрицу и учитываем выстрел
@@ -185,7 +185,7 @@ class Battlefield {
     const { x, y } = shot;
     // если мы попали
     if (matrix[y][x].ship) {
-      shot.setVariant("shot-wounded");
+      shot.setVariant("wounded");
 
       // проверяем, что карабль по которому мы стреля не убит
       const { ship } = matrix[y][x];
@@ -207,7 +207,15 @@ class Battlefield {
       // если все палубы ранены, то карабль убит
       if (killed) {
         ship.killed = true;
-        shot.setVariant("killed");
+        for (let i = 0; i < ship.size; i++) {
+          const cx = ship.x + dx * i;
+          const cy = ship.y + dy * i;          
+         
+          const shot = this.shots.find(shot => shot.x === cx && shot.y === cy);
+
+          shot.setVariant("killed");
+        }
+
       }
     }
 
@@ -215,8 +223,17 @@ class Battlefield {
     return true;
   }
 
-  removeShot() {
+  removeShot(shot) {
+    // проверка, если ли выстрел
+    if (!this.shots.includes(shot)) {
+      return false;
+    }
+
+    // находимим индекс выстрела
+    const index = this.shots.indexOf(shot);
+    this.shots.splice(index, 1);
     this.#changed = true;
+    return true;
   }
 
   removeAllShots() {
@@ -246,5 +263,10 @@ class Battlefield {
         }
       }
     }
+  }
+
+  clear() {
+    this.removeAllShots();
+    this.removeAllShips();
   }
 }

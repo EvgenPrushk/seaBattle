@@ -120,4 +120,16 @@ class BattlefieldView extends Battlefield {
     shot.div.style.top = `${cellRect.top - rootRect.top}px`;
     return true;
   }
+
+  removeShot(shot) {
+    if (!super.addShot(shot)) {
+      return false;
+    }
+    // если имеется shot.div, то удаляем его
+    if (Array.prototype.includes.call(this.polygon, shot.div )) {
+      shot.div.remove();
+    }
+
+    return true;
+  }
 }
