@@ -20,14 +20,23 @@ function addEventListener(element, ...args) {
   return () => element.removeEventListener(...args);
 }
 
-function getSeveralRandom(array, size) {
-	if(size > array.length){
-		size = array.length;
-	}
-	const result = []
+function getRandomSeveral(array = [], size = 1) {
+  // создаем копию массива
+  array = array.slice();
 
-	const indexs = Array
+  if (size > array.length) {
+    size = array.length;
+  }
+  const result = [];
 
-	return resultl;
+  while (result.length < size ) {
+    // берем случайный индекс из длины массива
+    const index = Math.floor(Math.random() * array.length);
+    // забираем этот элемент и уменьшать его на единицу
+    const item = array.splice(index, 1)[0];
+
+    result.push(item);
+  }
+  return result;
 }
 // 01-00-51

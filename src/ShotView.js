@@ -32,4 +32,3 @@ class ShotView extends Shot {
     return true;
   }
 }
-//40-30
