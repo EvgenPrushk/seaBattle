@@ -179,6 +179,7 @@ class PreparationScene extends Scene {
     // забираем свободные клетки, где нет кораблей
     const withoutShipItems = matrix.flat().filter((item) => !item.ship);
     let untouchables = [];
+
     if (level === "simple") {
     } else if (level === "middle") {
       untouchables = getRandomSeveral(withoutShipItems, 20);

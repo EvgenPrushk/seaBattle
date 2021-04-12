@@ -26,9 +26,7 @@ class ComputerScene extends Scene {
   update() {
     // забираем с помощью диструктуризации  данные
     const { mouse, opponent, player } = this.app;
-    // т.к cells - это матрица, то мы ее схлопываем 1 уровень вложенности за счет
-    // flat()
-
+   
     const isEnd = opponent.loser || player.loser;
 
     if (isEnd) {
@@ -56,7 +54,7 @@ class ComputerScene extends Scene {
 
           const shot = new ShotView(x, y);
           const result = opponent.addShot(shot);
-
+          // передаем ход, если прозошел промах
           if (result) {
             this.playerTurn = shot.variant === "miss" ? false : true;
           }
@@ -68,22 +66,23 @@ class ComputerScene extends Scene {
       const x = getRandomBetween(0, 9);
       const y = getRandomBetween(0, 9);
 
-      let untouchables = false;
+      let inUntouchables = false;
 
       for (const item of this.untouchables) {
         // если мы хотим сделать выстрел в клетку из массива
         // untouchables, то сы туда стрелять не будем
         if (item.x === x && item.y === y) {
-          untouchables = true;
+         inUntouchables = true;
           break;
         }
       }
 
       // показываем выстрел на экране
-      if (!untouchables) {
+      if (!inUntouchables) {
         const shot = new ShotView(x, y);
         const result = player.addShot(shot);
 
+      // передача хода компьютером
         if (result) {
           this.playerTurn = shot.variant === "miss" ? true : false;
         }
@@ -91,7 +90,7 @@ class ComputerScene extends Scene {
     }
 
     if (this.playerTurn) {
-      this.status.textContent = "Ващ ход";
+      this.status.textContent = "Ваш ход";
     } else {
       this.status.textContent = "Ход компьютера";
     }

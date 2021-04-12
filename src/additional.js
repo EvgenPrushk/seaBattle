@@ -21,12 +21,13 @@ function addEventListener(element, ...args) {
 }
 
 function getRandomSeveral(array = [], size = 1) {
-  // создаем копию массива
+  // создаем копию массива, чтобы не мутировать исходный масив
   array = array.slice();
 
   if (size > array.length) {
     size = array.length;
   }
+
   const result = [];
 
   while (result.length < size ) {
@@ -37,6 +38,7 @@ function getRandomSeveral(array = [], size = 1) {
 
     result.push(item);
   }
+
   return result;
 }
-// 01-00-51
+
