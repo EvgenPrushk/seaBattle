@@ -2,6 +2,7 @@ class ComputerScene extends Scene {
   untouchables = [];
   playerTurn = true;
   status = null;
+  removeEventListeners = [];
 
   init() {
     this.status = document.querySelector(".battlefield-status");
@@ -21,12 +22,37 @@ class ComputerScene extends Scene {
     opponent.randomize(ShipView);
 
     this.untouchables = untouchables;
+    this.removeEventListeners = [];
+
+    const gaveupButton = document.querySelector('[data-action="gaveup"]');
+    const againButton = document.querySelector('[data-action="again"]');
+
+    gaveupButton.classList.remove("hidden");
+    againButton.classList.add("hidden");
+    this.removeEventListeners.push(
+      addEventListener(gaveupButton, "click", () => {
+        this.app.start("preparation");
+      })
+    );
+
+    this.removeEventListeners.push(
+      addEventListener(againButton, "click", () => {
+        this.app.start("preparation");
+      })
+    );
+  }
+
+  stop() {
+    for (const removeEventListener of this.removeEventListeners) {
+      removeEventListener();
+    }
+    this.removeEventListeners = [];
   }
 
   update() {
     // забираем с помощью диструктуризации  данные
     const { mouse, opponent, player } = this.app;
-   
+
     const isEnd = opponent.loser || player.loser;
 
     if (isEnd) {
@@ -35,6 +61,11 @@ class ComputerScene extends Scene {
       } else {
         this.status.textContent = "Компьютер выиграл";
       }
+
+      document.querySelector('[data-action="gaveup"]').classList.add("hidden");
+      document
+        .querySelector('[data-action="again"]')
+        .classList.remove("hidden");
 
       return;
     }
@@ -72,7 +103,7 @@ class ComputerScene extends Scene {
         // если мы хотим сделать выстрел в клетку из массива
         // untouchables, то сы туда стрелять не будем
         if (item.x === x && item.y === y) {
-         inUntouchables = true;
+          inUntouchables = true;
           break;
         }
       }
@@ -82,7 +113,7 @@ class ComputerScene extends Scene {
         const shot = new ShotView(x, y);
         const result = player.addShot(shot);
 
-      // передача хода компьютером
+        // передача хода компьютером
         if (result) {
           this.playerTurn = shot.variant === "miss" ? true : false;
         }

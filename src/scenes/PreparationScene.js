@@ -23,6 +23,12 @@ class PreparationScene extends Scene {
   }
 
   start() {
+    const {player, opponent} = this.app;
+    opponent.clear();
+    player.removeAllShots();
+    player.ships.forEach(ship =>ship.killed = false);
+
+
     this.removeEventListeners = [];
     document
       .querySelectorAll(".app-actions")
@@ -190,3 +196,5 @@ class PreparationScene extends Scene {
     this.app.start("computer", untouchables);
   }
 }
+
+//01-30-07
