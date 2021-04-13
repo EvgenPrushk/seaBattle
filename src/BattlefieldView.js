@@ -125,11 +125,11 @@ class BattlefieldView extends Battlefield {
   }
 
   removeShot(shot) {
-    if (!super.addShot(shot)) {
+    if (!super.removeShot(shot)) {
       return false;
     }
     // если имеется shot.div, то удаляем его
-    if (Array.prototype.includes.call(this.polygon, shot.div)) {
+    if (Array.prototype.includes.call(this.polygon.children, shot.div)) {
       shot.div.remove();
     }
 

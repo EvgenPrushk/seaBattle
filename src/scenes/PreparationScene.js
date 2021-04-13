@@ -23,11 +23,10 @@ class PreparationScene extends Scene {
   }
 
   start() {
-    const {player, opponent} = this.app;
+    const { player, opponent } = this.app;
     opponent.clear();
     player.removeAllShots();
-    player.ships.forEach(ship =>ship.killed = false);
-
+    player.ships.forEach((ship) => (ship.killed = false));
 
     this.removeEventListeners = [];
     document

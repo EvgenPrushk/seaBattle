@@ -5,7 +5,7 @@ const app = new Application({
 
 app.start("preparation");
 
-document.querySelector('[data-action="randomize"]').click();
-document.querySelector('[data-computer="hard"]').disabled = true;
-document.querySelector('[data-computer="hard"]').click();
+// document.querySelector('[data-action="randomize"]').click();
+// document.querySelector('[data-computer="hard"]').disabled = true;
+// document.querySelector('[data-computer="hard"]').click();
 
