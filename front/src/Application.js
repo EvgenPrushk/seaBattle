@@ -1,60 +1,69 @@
 class Application {
-	mouse = null;
+  socket = null;
+  mouse = null;
 
-	player = null;
-	opponent = null;
+  player = null;
+  opponent = null;
 
-	scenes = {};
-	activeScene = null;
+  scenes = {};
+  activeScene = null;
 
-	constructor(scenes = {}) {
-		const mouse = new Mouse(document.body);
-		const player = new BattlefieldView(true);
-		const opponent = new BattlefieldView(false);
+  constructor(scenes = {}) {
+    const mouse = new Mouse(document.body);
+    const player = new BattlefieldView(true);
+    const opponent = new BattlefieldView(false);
+    const socket = io();
 
-		Object.assign(this, { mouse, player, opponent });
+    Object.assign(this, { mouse, player, opponent, socket });
 
-		document.querySelector('[data-side="player"]').append(player.root);
-		document.querySelector('[data-side="opponent"]').append(opponent.root);
+    document.querySelector('[data-side="player"]').append(player.root);
+    document.querySelector('[data-side="opponent"]').append(opponent.root);
 
-		for (const [sceneName, SceneClass] of Object.entries(scenes)) {
-			this.scenes[sceneName] = new SceneClass(sceneName, this);
-		}
+    for (const [sceneName, SceneClass] of Object.entries(scenes)) {
+      this.scenes[sceneName] = new SceneClass(sceneName, this);
+    }
 
-		for (const scene of Object.values(this.scenes)) {
-			scene.init();
-		}
+    for (const scene of Object.values(this.scenes)) {
+      scene.init();
+    }   
+	// сколько человек онлайн
+    socket.addEventListener("playerCount", (n) => {
+      document.querySelector("[data-playersCount]").textContent = n;
+      console.log(n);
+    });
 
-		requestAnimationFrame(() => this.tick());
-	}
+	
 
-	tick() {
-		requestAnimationFrame(() => this.tick());
+    requestAnimationFrame(() => this.tick());
+  }
 
-		if (this.activeScene) {
-			this.activeScene.update();
-		}
+  tick() {
+    requestAnimationFrame(() => this.tick());
 
-		this.mouse.tick();
-	}
+    if (this.activeScene) {
+      this.activeScene.update();
+    }
 
-	start(sceneName, ...args) {
-		if (this.activeScene && this.activeScene.name === sceneName) {
-			return false;
-		}
+    this.mouse.tick();
+  }
 
-		if (!this.scenes.hasOwnProperty(sceneName)) {
-			return false;
-		}
+  start(sceneName, ...args) {
+    if (this.activeScene && this.activeScene.name === sceneName) {
+      return false;
+    }
 
-		if (this.activeScene) {
-			this.activeScene.stop();
-		}
+    if (!this.scenes.hasOwnProperty(sceneName)) {
+      return false;
+    }
 
-		const scene = this.scenes[sceneName];
-		this.activeScene = scene;
-		scene.start(...args);
+    if (this.activeScene) {
+      this.activeScene.stop();
+    }
 
-		return true;
-	}
+    const scene = this.scenes[sceneName];
+    this.activeScene = scene;
+    scene.start(...args);
+
+    return true;
+  }
 }

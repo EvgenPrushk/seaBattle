@@ -42,6 +42,7 @@ class PreparationScene extends Scene {
     const simpleButton = document.querySelector('[data-computer="simple"]');
     const middleButton = document.querySelector('[data-computer="middle"]');
     const hardButton = document.querySelector('[data-computer="hard"]');
+    const randomButton = document.querySelector('[data-type="random"]');
 
     // при нажании на кнопку раставляем коробли в ручную
     this.removeEventListeners.push(
@@ -53,19 +54,21 @@ class PreparationScene extends Scene {
     );
 
     this.removeEventListeners.push(
-      addListener(simpleButton, "click", () =>
-        this.startComputer("simple")
-      )
+      addListener(simpleButton, "click", () => this.startComputer("simple"))
     );
 
     this.removeEventListeners.push(
-      addListener(middleButton, "click", () =>
-        this.startComputer("middle")
-      )
+      addListener(middleButton, "click", () => this.startComputer("middle"))
     );
 
     this.removeEventListeners.push(
       addListener(hardButton, "click", () => this.startComputer("hard"))
+    );
+
+    this.removeEventListeners.push(
+      addListener(randomButton, "click", () =>
+        this.app.start("online", "random")
+      )
     );
   }
 
@@ -149,10 +152,12 @@ class PreparationScene extends Scene {
       document.querySelector('[data-computer="simple"]').disabled = false;
       document.querySelector('[data-computer="middle"]').disabled = false;
       document.querySelector('[data-computer="hard"]').disabled = false;
+      document.querySelector('[data-type="random"]').disabled = false;
     } else {
       document.querySelector('[data-computer="simple"]').disabled = true;
       document.querySelector('[data-computer="middle"]').disabled = true;
       document.querySelector('[data-computer="hard"]').disabled = true;
+      document.querySelector('[data-type="random"]').disabled = true;
     }
   }
   // отвечает за случайную растановку кораблей
