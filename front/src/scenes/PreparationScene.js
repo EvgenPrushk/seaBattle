@@ -45,27 +45,27 @@ class PreparationScene extends Scene {
 
     // при нажании на кнопку раставляем коробли в ручную
     this.removeEventListeners.push(
-      addEventListener(manuallyButton, "click", () => this.manually())
+      addListener(manuallyButton, "click", () => this.manually())
     );
     // при нажании на кнопку раставляем коробли
     this.removeEventListeners.push(
-      addEventListener(randomizeButton, "click", () => this.randomize())
+      addListener(randomizeButton, "click", () => this.randomize())
     );
 
     this.removeEventListeners.push(
-      addEventListener(simpleButton, "click", () =>
+      addListener(simpleButton, "click", () =>
         this.startComputer("simple")
       )
     );
 
     this.removeEventListeners.push(
-      addEventListener(middleButton, "click", () =>
+      addListener(middleButton, "click", () =>
         this.startComputer("middle")
       )
     );
 
     this.removeEventListeners.push(
-      addEventListener(hardButton, "click", () => this.startComputer("hard"))
+      addListener(hardButton, "click", () => this.startComputer("hard"))
     );
   }
 
