@@ -27,7 +27,7 @@ class Application {
       scene.init();
     }   
 	// сколько человек онлайн
-    socket.addEventListener("playerCount", (n) => {
+    socket.on("playerCount", (n) => {
       document.querySelector("[data-playersCount]").textContent = n;
       console.log(n);
     });
