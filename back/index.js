@@ -36,13 +36,14 @@ const waitingRandom = new Set();
 io.on("connection", (socket) => {
   io.emit("playerCount", io.engine.clientsCount);
 
-  socket.on("disconnect", () => {
-    io.emit("playerCount", io.engine.clientsCount);
+  socket.on(
+    "disconnect",
+    () => io.emit("playerCount", io.engine.clientsCount)
 
-    if (waitingRandom.has(socket)) {
-      waitingRandom.delete(socket);
-    }
-  });
+    //   if (waitingRandom.has(socket)) {
+    //     waitingRandom.delete(socket);
+    //   }
+  );
 
   socket.on("findRandomOpponent", () => {
     waitingRandom.add(socket);
