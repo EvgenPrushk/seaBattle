@@ -28,12 +28,10 @@ class Application {
     }  
 
     
-    this.socket.on("playerCount", (n) => {
+   socket.on("playerCount", (n) => {
       document.querySelector("[data-playersCount]").textContent = n;
      
     });
-
-	
 
     requestAnimationFrame(() => this.tick());
   }
