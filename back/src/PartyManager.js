@@ -1,6 +1,32 @@
-module.exports =  class PartyManager {
+const Player = require("./Player");
+const Party = require("./Party");
+const Ship = require("./Ship");
+module.exports = class PartyManager {
   players = [];
   parties = [];
+  // collection for add and remove players
+  waitingRandom = [];
+
+  connection(socket) {
+    //TODO: identify one user
+    const player = new Player();
+    //add player in players
+    this.players.push(player);
+
+    socket.on("shipSet", (ships) => {
+      if (player.party) {
+        return ;
+      }
+
+      player.battlefield.clear();
+      // ship  use {size, direction}
+      for (const { size, direction, x, y } of ships) {
+        const ship = new Ship(size, direction);
+        player.battlefield.addShip(ship, x, y);
+      }
+    });
+  }
+  disconnect(socket) {}
 
   addPlayer(player) {
     if (this.players.includes(player)) {
@@ -19,6 +45,13 @@ module.exports =  class PartyManager {
     const index = this.players.indexOf(player);
     //deleting a player by index
     this.players.splice(index, 1);
+
+    if (this.waitingRandom.includes(player)) {
+      const index = this.waitingRandom.indexOf(player);
+
+      this.waitingRandom.splice(index, 1);
+    }
+
     return true;
   }
 
@@ -35,22 +68,22 @@ module.exports =  class PartyManager {
 
   addParty(party) {
     if (this.parties.includes(party)) {
-        return false;
-      }
-  
-      this.parties.push(party);
-      return true;
+      return false;
+    }
+
+    this.parties.push(party);
+    return true;
   }
 
   removeParty(party) {
     if (!this.parties.includes(party)) {
-        return false;
-      }
-      //take the index from the party
-      const index = this.parties.indexOf(party);
-      //deleting a party by index
-      this.parties.splice(index, 1);
-      return true;
+      return false;
+    }
+    //take the index from the party
+    const index = this.parties.indexOf(party);
+    //deleting a party by index
+    this.parties.splice(index, 1);
+    return true;
   }
 
   removeAllParties(party) {
@@ -63,4 +96,19 @@ module.exports =  class PartyManager {
 
     return this.parties.length;
   }
-}
+
+  playRandom(player) {
+    if (this.waitingRandom.includes(player)) {
+      return false;
+    }
+
+    this.waitingRandom.push(player);
+
+    if (this.waitingRandom.length >= 2) {
+      const [player1, player2] = this.waitingRandom.splice(0, 2);
+      const party = new Party(player1, player2);
+      this.addParty(party);
+    }
+    return true;
+  }
+};

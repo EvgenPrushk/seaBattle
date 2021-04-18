@@ -13,5 +13,6 @@ module.exports = class Ship {
 	constructor(size, direction) {
 		this.size = size;
 		this.direction = direction;
+
 	}
 }
