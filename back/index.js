@@ -1,6 +1,8 @@
 // зависимости
 const session = require("express-session");
 const express = require("express");
+const PartyManager = require("./src/PartyManager");
+const pm = new PartyManager();
 
 // создания приложения ExpressJS
 const app = express();
@@ -35,15 +37,15 @@ const waitingRandom = new Set();
 // Прослушивание socket соединения
 io.on("connection", (socket) => {
   io.emit("playerCount", io.engine.clientsCount);
+  pm.addParty(socket);
 
-  socket.on(
-    "disconnect",
-    () => {io.emit("playerCount", io.engine.clientsCount)
+  socket.on("disconnect", () => {
+    io.emit("playerCount", io.engine.clientsCount);
 
-      if (waitingRandom.has(socket)) {
-        waitingRandom.delete(socket);
-      }
-    });
+    if (waitingRandom.has(socket)) {
+      waitingRandom.delete(socket);
+    }
+  });
 
   socket.on("findRandomOpponent", () => {
     waitingRandom.add(socket);
