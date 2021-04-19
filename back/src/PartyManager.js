@@ -9,11 +9,15 @@ module.exports = class PartyManager {
 
   connection(socket) {
     //TODO: identify one user
-    const player = new Player();
+    const player = new Player(socket);
     //add player in players
     this.players.push(player);
 
     socket.on("shipSet", (ships) => {
+      if (this.waitingRandom.includes(player)) {
+        return;
+      }
+
       if (player.party) {
         return;
       }
@@ -39,7 +43,7 @@ module.exports = class PartyManager {
       player.emit('statusChange', 'randomFinding')
 
 
-      if (this.waitingRandom >= 2) {
+      if (this.waitingRandom.length >= 2) {
         const [player1, player2] = this.waitingRandom.splice(0, 2);
         const party = new Party(player1, player2);
         // add party in parties
