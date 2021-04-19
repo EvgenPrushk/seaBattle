@@ -15,14 +15,35 @@ module.exports = class PartyManager {
 
     socket.on("shipSet", (ships) => {
       if (player.party) {
-        return ;
+        return;
       }
 
+      // checking ship placement
       player.battlefield.clear();
       // ship  use {size, direction}
       for (const { size, direction, x, y } of ships) {
         const ship = new Ship(size, direction);
         player.battlefield.addShip(ship, x, y);
+      }
+    });
+    socket.on("findRandomOpponent", () => {
+      if (this.waitingRandom.includes(player)) {
+        return;
+      }
+
+      if (player.party) {
+        return;
+      }
+      // add player in party
+      this.waitingRandom.push(player);
+      player.emit('statusChange', 'randomFinding')
+
+
+      if (this.waitingRandom >= 2) {
+        const [player1, player2] = this.waitingRandom.splice(0, 2);
+        const party = new Party(player1, player2);
+        // add party in parties
+        this.parties.push(party);
       }
     });
   }

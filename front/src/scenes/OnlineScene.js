@@ -9,14 +9,13 @@ class OnlineScene extends Scene {
 
     const { socket } = this.app;
 
-    socket.on("status", (status) => {
+    socket.on("statusChange", (status) => {
       this.status = status;
       this.statusUpdate();
     });
 
-    socket.on("PartyStart", (ownTurn) => {
+    socket.on("turnUpdate", (ownTurn) => {
       this.ownTurn = ownTurn;
-      this.status = "play";
       this.statusUpdate();
     });
 

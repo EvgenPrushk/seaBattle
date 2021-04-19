@@ -6,7 +6,7 @@ module.exports = class Player {
   battlefield = new Battlefield();
 
   get ready() {
-      return !this.battlefield.complete&&!this.party&&this.socket
+    return !this.battlefield.complete && !this.party && this.socket;
     // if (!this.battlefield.complete) {
     //   return false;
     // }
@@ -24,5 +24,11 @@ module.exports = class Player {
 
   constructor(socket) {
     this.socket = socket;
+  }
+
+  emit(...args) {
+    if (this.socket && this.socket.connected) {
+      this.socket.emit(...args);
+    }
   }
 };
