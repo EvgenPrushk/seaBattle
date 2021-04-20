@@ -56,4 +56,12 @@ class OnlineScene extends Scene {
       StatusDiv.textContent = this.ownTurn ? "You turn" : "opponent is turn";
     }
   }
+
+  update() {
+    const { mouse, opponent} = this.app;
+
+    if (opponent.table.isUnder(mouse)) {
+      const cell = opponent.cells.find(cell => isUnder(mouse))
+    }
+  }
 }
