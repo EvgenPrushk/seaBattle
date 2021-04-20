@@ -19,6 +19,16 @@ class OnlineScene extends Scene {
       this.statusUpdate();
     });
 
+    socket.on('addShot', ({x, y, variant}) => {
+      const shot = new ShotView(x, y, variant);
+      if (this.ownTurn) {
+        this.app.player.addShot(shot);
+      } else {
+        this.app.opponent.addShot(shot);
+      }
+  
+    })
+
     this.statusUpdate();
   }
 
@@ -58,7 +68,7 @@ class OnlineScene extends Scene {
   }
 
   update() {
-    const { mouse, opponent } = this.app;
+    const { mouse, opponent, socket } = this.app;
     // get all the cells
     const cells = opponent.cells.flat();
     cells.forEach((x) => x.classList.remove("battlefield-item__active"));
@@ -72,7 +82,9 @@ class OnlineScene extends Scene {
           cell.classList.add('battlefield-item__active')
 
           if (mouse.left && !mouse.pLeft) {
-            this.app.socket
+            const x = parseInt(cell.dataset.x)
+            const y = parseInt(cell.dataset.y)
+            socket.emit('addShot', x, y)
           }
         }
     }
