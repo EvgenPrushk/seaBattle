@@ -28,10 +28,24 @@ module.exports = class Party {
         const result = this.nextPlayer.battlefield.addShot(shot);
 
         if (result) {
-          player1.emit("addShot", shot);
-          player2.emit("addShot", shot);
+          this.turnPlayer.emit(
+            "setShots",
+            this.turnPlayer.battlefield.shots.map((shot) => ({
+              x: shot.x,
+              y: shot.y,
+              variant: shot.variant,
+            }))
+          );
+          this.nextPlayer.emit(
+            "setShots",
+            this.nextPlayer.battlefield.shots.map((shot) => ({
+              x: shot.x,
+              y: shot.y,
+              variant: shot.variant,
+            }))
+          );
 
-          if (shot === "miss") {
+          if (shot.variant === "miss") {
             this.turnPlayer = this.nextPlayer;
             this.turnUpdate();
           }

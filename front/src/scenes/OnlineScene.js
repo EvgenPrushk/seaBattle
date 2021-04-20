@@ -19,15 +19,24 @@ class OnlineScene extends Scene {
       this.statusUpdate();
     });
 
-    socket.on('addShot', ({x, y, variant}) => {
+    socket.on("addShot", ({ x, y, variant }) => {
       const shot = new ShotView(x, y, variant);
       if (this.ownTurn) {
-        this.app.player.addShot(shot);
-      } else {
         this.app.opponent.addShot(shot);
+      } else {
+        this.app.player.addShot(shot);
       }
-  
-    })
+
+      socket.on("setShots", (shots) => {
+        const battlefield = this.ownTurn ? this.app.player : this.app.opponent;
+        battlefield.removeAllShots();
+
+        for (const { x, y, variant } of shots) {
+          const shot = new ShotView(x, y, variant);
+          battlefield.addShot(shot);
+        }
+      });
+    });
 
     this.statusUpdate();
   }
@@ -78,15 +87,15 @@ class OnlineScene extends Scene {
         .flat()
         .find((cell) => isUnderPoint(mouse, cell));
 
-        if (cell) {
-          cell.classList.add('battlefield-item__active')
+      if (cell) {
+        cell.classList.add("battlefield-item__active");
 
-          if (mouse.left && !mouse.pLeft) {
-            const x = parseInt(cell.dataset.x)
-            const y = parseInt(cell.dataset.y)
-            socket.emit('addShot', x, y)
-          }
+        if (mouse.left && !mouse.pLeft) {
+          const x = parseInt(cell.dataset.x);
+          const y = parseInt(cell.dataset.y);
+          socket.emit("addShot", x, y);
         }
+      }
     }
   }
 }
