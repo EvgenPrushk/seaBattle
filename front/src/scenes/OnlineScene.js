@@ -58,10 +58,23 @@ class OnlineScene extends Scene {
   }
 
   update() {
-    const { mouse, opponent} = this.app;
+    const { mouse, opponent } = this.app;
+    // get all the cells
+    const cells = opponent.cells.flat();
+    cells.forEach((x) => x.classList.remove("battlefield-item__active"));
 
-    if (opponent.table.isUnder(mouse)) {
-      const cell = opponent.cells.find(cell => isUnder(mouse))
+    if (opponent.isUnder(mouse)) {
+      const cell = opponent.cells
+        .flat()
+        .find((cell) => isUnderPoint(mouse, cell));
+
+        if (cell) {
+          cell.classList.add('battlefield-item__active')
+
+          if (mouse.left && !mouse.pLeft) {
+            this.app.socket
+          }
+        }
     }
   }
 }
