@@ -3,39 +3,49 @@ class OnlineScene extends Scene {
   status = "";
   ownTurn = false;
 
+  removeEventListeners = [];
+
   init() {
     const actionsBar = document.querySelector('[data-scene="online"]');
     this.actionsBar = actionsBar;
 
-    const { socket } = this.app;
+    const { socket, player, opponent } = this.app;
 
     socket.on("statusChange", (status) => {
+      console.log("statusChange", status);
       this.status = status;
       this.statusUpdate();
     });
 
     socket.on("turnUpdate", (ownTurn) => {
+      console.log("turnUpdate", ownTurn);
       this.ownTurn = ownTurn;
       this.statusUpdate();
     });
 
     socket.on("addShot", ({ x, y, variant }) => {
       const shot = new ShotView(x, y, variant);
+
       if (this.ownTurn) {
         this.app.opponent.addShot(shot);
       } else {
         this.app.player.addShot(shot);
       }
+    });
 
-      socket.on("setShots", (shots) => {
-        const battlefield = this.ownTurn ? this.app.player : this.app.opponent;
-        battlefield.removeAllShots();
+    socket.on("setShots", (ownShots, opponentShots) => {
+      player.removeAllShots();
 
-        for (const { x, y, variant } of shots) {
-          const shot = new ShotView(x, y, variant);
-          battlefield.addShot(shot);
-        }
-      });
+      for (const { x, y, variant } of ownShots) {
+        const shot = new ShotView(x, y, variant)
+        player.addShot(shot)
+      }
+
+      opponent.removeAllShots();
+      for (const { x, y, variant } of opponentShots) {
+        const shot = new ShotView(x, y, variant)
+        opponent.addShot(shot)
+      }
     });
 
     this.statusUpdate();
@@ -77,7 +87,7 @@ class OnlineScene extends Scene {
   }
 
   update() {
-    const { mouse, opponent, socket } = this.app;
+    const { mouse, opponent, player, socket } = this.app;
     // get all the cells
     const cells = opponent.cells.flat();
     cells.forEach((x) => x.classList.remove("battlefield-item__active"));
