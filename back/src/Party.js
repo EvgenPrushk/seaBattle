@@ -21,13 +21,6 @@ class Party extends Observer {
       player.party = this;
       player.emit("statusChange", "play");
 
-      player.on("gaveup", () => {
-        this.stop();
-
-        player1.emit("statusChange", player1 === player ? "loser" : "winner");
-        player2.emit("statusChange", player2 === player ? "loser" : "winner");
-      });
-
       player.on("addShot", (x, y) => {
         if (this.turnPlayer !== player || !this.play) {
           return;
@@ -80,16 +73,27 @@ class Party extends Observer {
   }
 
   stop() {
+    if (!this.play) {
+      return;
+    }
     this.play = false;
     this.dispatch();
 
     this.player1.party = null;
     this.player2.party = null;
-     
+
     this.player1 = null;
     this.player2 = null;
-
+  }
+  gaveup(player) {
+    const { player1, player2 } = this;
+    player1.emit("statusChange", player1 === player ? "loser" : "winner");
+    player2.emit("statusChange", player2 === player ? "loser" : "winner");
+    
+    this.stop();
   }
 }
 
 module.exports = Party;
+
+//02-21-43

@@ -49,9 +49,10 @@ module.exports = class PartyManager {
         this.parties.push(party);
 
         const  unsubscribe = party.subscribe(() =>{
+          
+          this.removeParty(party)
           unsubscribe();
 
-          this.removeParty(party)
         });
       }
     });
