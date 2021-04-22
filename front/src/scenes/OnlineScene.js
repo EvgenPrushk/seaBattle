@@ -35,16 +35,16 @@ class OnlineScene extends Scene {
 
     socket.on("setShots", (ownShots, opponentShots) => {
       player.removeAllShots();
-
+      // add shot player
       for (const { x, y, variant } of ownShots) {
-        const shot = new ShotView(x, y, variant)
-        player.addShot(shot)
+        const shot = new ShotView(x, y, variant);
+        player.addShot(shot);
       }
-
+      // add shot opponent
       opponent.removeAllShots();
       for (const { x, y, variant } of opponentShots) {
-        const shot = new ShotView(x, y, variant)
-        opponent.addShot(shot)
+        const shot = new ShotView(x, y, variant);
+        opponent.addShot(shot);
       }
     });
 
@@ -70,8 +70,38 @@ class OnlineScene extends Scene {
       .querySelectorAll(".app-actions")
       .forEach((element) => element.classList.add("hidden"));
 
-    document.querySelector('[data-scene="online"]').classList.remove("hidden");
+    const scneneActionsBar = document.querySelector('[data-scene="online"]');
+    scneneActionsBar.classList.remove("hidden");
+
+    const gaveupButton = scneneActionsBar.querySelector(
+      '[data-action="gaveup"]'
+    );
+    const againButton = scneneActionsBar.querySelector('[data-action="again"]');
+
+    againButton.classList.add("hidden");
+    gaveupButton.classList.remove("hidden");
+
+    this.removeEventListeners = [];
+
+    this.removeEventListeners.push(
+      addListener(againButton, "click", () => {
+        this.app.start("preparation");
+      })
+    );
+    this.removeEventListeners.push(
+      addListener(gaveupButton, "click", () => {
+        socket.emit("gaveup");
+        this.app.start("preparation");
+      })
+    );
+
     this.statusUpdate();
+  }
+
+  stop() {
+    for (const removeEventListener of this.removeEventListeners) {
+      removeEventListener();
+    }
   }
 
   statusUpdate() {
@@ -83,6 +113,10 @@ class OnlineScene extends Scene {
       StatusDiv.textContent = "Поиск случайного игрока";
     } else if (this.status === "play") {
       StatusDiv.textContent = this.ownTurn ? "You turn" : "opponent is turn";
+    } else if (this.status === "winner") {
+      StatusDiv.textContent = "You win";
+    } else if (this.status === "loser") {
+      StatusDiv.textContent = "You lose";
     }
   }
 
@@ -92,6 +126,9 @@ class OnlineScene extends Scene {
     const cells = opponent.cells.flat();
     cells.forEach((x) => x.classList.remove("battlefield-item__active"));
 
+    if (player.loser) {
+      return;
+    }
     if (opponent.isUnder(mouse)) {
       const cell = opponent.cells
         .flat()

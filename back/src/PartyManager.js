@@ -40,14 +40,19 @@ module.exports = class PartyManager {
       }
       // add player in party
       this.waitingRandom.push(player);
-      player.emit('statusChange', 'randomFinding')
-
+      player.emit("statusChange", "randomFinding");
 
       if (this.waitingRandom.length >= 2) {
         const [player1, player2] = this.waitingRandom.splice(0, 2);
         const party = new Party(player1, player2);
         // add party in parties
         this.parties.push(party);
+
+        const  unsubscribe = party.subscribe(() =>{
+          unsubscribe();
+
+          this.removeParty(party)
+        });
       }
     });
   }

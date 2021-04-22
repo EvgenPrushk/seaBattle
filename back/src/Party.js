@@ -1,18 +1,19 @@
-// const Observer = require("./Observer");
+const Observer = require("./Observer");
 const Shot = require("./Shot");
-module.exports = class Party {
+class Party extends Observer {
   player1 = null;
   player2 = null;
 
   turnPlayer = null;
+  play = true;
 
   get nextPlayer() {
     return this.turnPlayer === this.player1 ? this.player2 : this.player1;
   }
 
   constructor(player1, player2) {
-    // super()
-    //
+    super();
+
     Object.assign(this, { player1, player2 });
     this.turnPlayer = player1;
 
@@ -20,8 +21,15 @@ module.exports = class Party {
       player.party = this;
       player.emit("statusChange", "play");
 
+      player.on("gaveup", () => {
+        this.stop();
+
+        player1.emit("statusChange", player1 === player ? "loser" : "winner");
+        player2.emit("statusChange", player2 === player ? "loser" : "winner");
+      });
+
       player.on("addShot", (x, y) => {
-        if (this.turnPlayer !== player) {
+        if (this.turnPlayer !== player || !this.play) {
           return;
         }
         const shot = new Shot(x, y);
@@ -48,6 +56,18 @@ module.exports = class Party {
             this.turnUpdate();
           }
         }
+        if (player1.battlefield.loser || player2.battlefield.loser) {
+          this.stop();
+
+          player1.emit(
+            "statusChange",
+            player1.battlefield.loser ? "loser" : "winner"
+          );
+          player2.emit(
+            "statusChange",
+            player2.battlefield.loser ? "loser" : "winner"
+          );
+        }
       });
     }
 
@@ -58,4 +78,18 @@ module.exports = class Party {
     this.player1.emit("turnUpdate", this.player1 === this.turnPlayer);
     this.player2.emit("turnUpdate", this.player2 === this.turnPlayer);
   }
-};
+
+  stop() {
+    this.play = false;
+    this.dispatch();
+
+    this.player1.party = null;
+    this.player2.party = null;
+     
+    this.player1 = null;
+    this.player2 = null;
+
+  }
+}
+
+module.exports = Party;
