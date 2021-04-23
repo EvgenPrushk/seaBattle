@@ -68,7 +68,23 @@ module.exports = class PartyManager {
     });
   }
 
-  disconnect(socket) {}
+  disconnect(socket) {
+    // find player
+    const player = this.players.find((player) => player.socket === socket);
+    if (!player) {
+      return;
+    }
+
+    if (player.party) {
+      player.party.gaveup(player);
+    }
+
+    if (this.waitingRandom.includes(player)) {
+      // delete player
+      const index = this.waitingRandom.indexOf(player);
+      this.waitingRandom.splice(index, 1);
+    }
+  }
 
   addPlayer(player) {
     if (this.players.includes(player)) {
