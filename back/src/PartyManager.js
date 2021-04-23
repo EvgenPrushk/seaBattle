@@ -48,15 +48,26 @@ module.exports = class PartyManager {
         // add party in parties
         this.parties.push(party);
 
-        const  unsubscribe = party.subscribe(() =>{
-          
-          this.removeParty(party)
+        const unsubscribe = party.subscribe(() => {
+          this.removeParty(party);
           unsubscribe();
-
         });
       }
     });
+
+    socket.on("gaveup", () => {
+      if (player.party) {
+        player.party.gaveup(player);
+      }
+    });
+
+    socket.on("addShot", (x, y) => {
+      if (player.party) {
+        player.party.addShot(player, x, y);
+      }
+    });
   }
+
   disconnect(socket) {}
 
   addPlayer(player) {

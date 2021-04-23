@@ -125,6 +125,18 @@ class OnlineScene extends Scene {
     // get all the cells
     const cells = opponent.cells.flat();
     cells.forEach((x) => x.classList.remove("battlefield-item__active"));
+    if (["loser", "winner"].includes(this.status)) {
+      const scneneActionsBar = document.querySelector('[data-scene="online"]');
+      const gaveupButton = scneneActionsBar.querySelector(
+        '[data-action="gaveup"]'
+      );
+      const againButton = scneneActionsBar.querySelector(
+        '[data-action="again"]'
+      );
+
+      againButton.classList.remove("hidden");
+      gaveupButton.classList.add("hidden");
+    }
 
     if (player.loser) {
       return;
