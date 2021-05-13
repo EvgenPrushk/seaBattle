@@ -94,6 +94,13 @@ class Party extends Observer {
       );
     }
   }
+  // method for sendMessage
+  sendMessage(message) {
+    const { player1, player2 } = this;
+    console.log(message);
+    player1.emit("message", message);
+    player2.emit("message", message);
+  }
 }
 
 module.exports = Party;

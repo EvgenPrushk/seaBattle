@@ -18,9 +18,17 @@ class OnlineScene extends Scene {
     });
 
     socket.on("turnUpdate", (ownTurn) => {
-      console.log("turnUpdate", ownTurn);
       this.ownTurn = ownTurn;
       this.statusUpdate();
+    });
+
+    socket.on("message", (message) => {
+      const div = document.createElement("div");
+      div.classList.add("app-message");
+      div.textContent = message;
+
+      const chat = document.querySelector(".app-messagges");
+      chat.insertBefore(div, chat.firstElementChild)
     });
 
     socket.on("addShot", ({ x, y, variant }) => {
@@ -64,7 +72,10 @@ class OnlineScene extends Scene {
       }))
     );
     socket.emit("findRandomOpponent");
-    console.log("variant");
+
+    const chat = document.querySelector(".app-chat");
+    chat.classList.remove("hidden");
+    document.querySelector(".app-messagges").textContent = "";
 
     document
       .querySelectorAll(".app-actions")
@@ -88,6 +99,19 @@ class OnlineScene extends Scene {
         this.app.start("preparation");
       })
     );
+
+    const input = chat.querySelector("input");
+    this.removeEventListeners.push(
+      addListener(input, "keydown", (e) => {
+        if (e.key === "Enter" && input.value) {
+          // add value in chat, max value= 120 simbol
+          const message = input.value.slice(0, 120);
+          input.value = "";
+          socket.emit("message", message);
+        }
+      })
+    );
+
     this.removeEventListeners.push(
       addListener(gaveupButton, "click", () => {
         socket.emit("gaveup");
@@ -102,6 +126,11 @@ class OnlineScene extends Scene {
     for (const removeEventListener of this.removeEventListeners) {
       removeEventListener();
     }
+
+    this.removeEventListeners = [];
+
+    document.querySelector(".app-chat").classList.add("hidden");
+    document.querySelector(".app-messgges").textContent = "";
   }
 
   statusUpdate() {
