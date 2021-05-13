@@ -17,7 +17,7 @@ module.exports = class PartyManager {
 
     // if player have => recconnection
     if (player) {
-      player.socket.emit("recconnection");
+      player.socket.emit("doubleConnection");
       player.socket.disconnect();
       player.socket = socket;
     } else {
@@ -218,10 +218,10 @@ module.exports = class PartyManager {
     const parties = this.parties.slice();
     // delete all parties
     for (const party of parties) {
-      this.removePlayer(party);
+      this.removeParty(party);
     }
 
-    return this.parties.length;
+    return parties.length;
   }
 
   playRandom(player) {
