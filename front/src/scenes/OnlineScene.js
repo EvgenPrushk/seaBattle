@@ -59,7 +59,7 @@ class OnlineScene extends Scene {
     socket.on("challengeOpponent", (key) => {
       console.log(key);
      history.pushState(null, null, `/${key}`)
-     alert('Первый кто пройдет по этой ссылке будет играть с вами:\n${location.href}')
+     alert(`Первый кто пройдет по этой ссылке будет играть с вами:\n${location.href}`)
     });
 
     this.statusUpdate();
@@ -141,7 +141,7 @@ class OnlineScene extends Scene {
     this.removeEventListeners = [];
 
     document.querySelector(".app-chat").classList.add("hidden");
-    document.querySelector(".app-messgges").textContent = "";
+    document.querySelector(".app-messagges").textContent = "";
   }
 
   statusUpdate() {

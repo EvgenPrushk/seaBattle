@@ -33,7 +33,7 @@ module.exports = class PartyManager {
     };
 
     socket.on("shipSet", (ships) => {
-      if (!isFree) {
+      if (!isFree()) {
         return;
       }
 
@@ -46,7 +46,7 @@ module.exports = class PartyManager {
       }
     });
     socket.on("findRandomOpponent", () => {
-      if (!isFree) {
+      if (!isFree()) {
         return;
       }
       // add player in party
@@ -68,10 +68,10 @@ module.exports = class PartyManager {
 
     socket.on("challengeOpponent", () => {
 
-      if (!isFree) {
+      if (!isFree()) {
         return;
       }
-      const key = getRandomString(10);
+      const key = getRandomString(20);
       socket.emit("challengeOpponent", key);
       this.waitingChallenge.set(key, player);
     });
