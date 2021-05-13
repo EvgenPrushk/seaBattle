@@ -80,7 +80,7 @@ module.exports = class PartyManager {
       } else {
         key = getRandomString(20);
         socket.emit("challengeOpponent", key);
-        console.log(key);
+        socket.emit("statusChange", "waiting");
 
         this.waitingChallenge.set(key, player);
       }
@@ -89,6 +89,20 @@ module.exports = class PartyManager {
     socket.on("gaveup", () => {
       if (player.party) {
         player.party.gaveup(player);
+      }
+
+      if (this.waitingRandom.includes(player)) {
+        // delete player
+        const index = this.waitingRandom.indexOf(player);
+        this.waitingRandom.splice(index, 1);
+      }
+  
+      const values = Array.from(this.waitingChallenge.values());
+      if (values.includes(player)) {
+        const index = values.indexOf(player);
+        const keys = Array.from(this.waitingChallenge.keys())
+        const key = keys[index];
+        this.waitingChallenge.delete(key)
       }
     });
 
@@ -122,6 +136,15 @@ module.exports = class PartyManager {
       const index = this.waitingRandom.indexOf(player);
       this.waitingRandom.splice(index, 1);
     }
+
+    const values = Array.from(this.waitingChallenge.values());
+    if (values.includes(player)) {
+      const index = values.indexOf(player);
+      const keys = Array.from(this.waitingChallenge.keys())
+      const key = keys[index];
+      this.waitingChallenge.delete(key)
+    }
+
   }
 
   addPlayer(player) {

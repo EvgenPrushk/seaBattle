@@ -159,6 +159,8 @@ class OnlineScene extends Scene {
       StatusDiv.textContent = "You win";
     } else if (this.status === "loser") {
       StatusDiv.textContent = "You lose";
+    }  else if (this.status === "waiting") {
+      StatusDiv.textContent = "Waiting opponent";
     }
   }
 
