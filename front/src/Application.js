@@ -14,7 +14,7 @@ class Application {
     const opponent = new BattlefieldView(false);
     const socket = io();
 
-    Object.assign(this, { mouse, player, opponent, socket});
+    Object.assign(this, { mouse, player, opponent, socket });
 
     document.querySelector('[data-side="player"]').append(player.root);
     document.querySelector('[data-side="opponent"]').append(opponent.root);
@@ -25,12 +25,15 @@ class Application {
 
     for (const scene of Object.values(this.scenes)) {
       scene.init();
-    }  
+    }
 
-    
-   socket.on("playerCount", (n) => {
+    socket.on("playerCount", (n) => {
       document.querySelector("[data-playersCount]").textContent = n;
-     
+      window.close();
+    });
+
+    socket.on("recconnection", () => {
+      alert("Socket is close. You have second tab");
     });
 
     requestAnimationFrame(() => this.tick());

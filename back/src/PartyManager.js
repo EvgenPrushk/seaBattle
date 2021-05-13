@@ -18,7 +18,7 @@ module.exports = class PartyManager {
     // if player have => recconnection
     if (player) {
       player.socket.emit("recconnection");
-      player.socket.close();
+      player.socket.disconnect();
       player.socket = socket;
     } else {
       player = new Player(socket, sessionId);
