@@ -1,11 +1,14 @@
 const Player = require("./Player");
 const Party = require("./Party");
 const Ship = require("./Ship");
+const { getRandomString } = require("./additional");
+
 module.exports = class PartyManager {
   players = [];
-  parties = [];
+  parties = new Map();
   // collection for add and remove players
   waitingRandom = [];
+  waitingChallenge = new Map;
 
   connection(socket) {
     //TODO: identify one user
@@ -13,12 +16,24 @@ module.exports = class PartyManager {
     //add player in players
     this.players.push(player);
 
-    socket.on("shipSet", (ships) => {
+    const isFree = () => {
       if (this.waitingRandom.includes(player)) {
-        return;
+        return false;
+      }
+      const values =Array.from(this.waitingChallenge.values())
+      if (values.includes(player)) {
+        return false;
       }
 
       if (player.party) {
+        return false;
+      }
+
+      return true;
+    };
+
+    socket.on("shipSet", (ships) => {
+      if (!isFree) {
         return;
       }
 
@@ -31,11 +46,7 @@ module.exports = class PartyManager {
       }
     });
     socket.on("findRandomOpponent", () => {
-      if (this.waitingRandom.includes(player)) {
-        return;
-      }
-
-      if (player.party) {
+      if (!isFree) {
         return;
       }
       // add player in party
@@ -53,6 +64,16 @@ module.exports = class PartyManager {
           unsubscribe();
         });
       }
+    });
+
+    socket.on("challengeOpponent", () => {
+
+      if (!isFree) {
+        return;
+      }
+      const key = getRandomString(10);
+      socket.emit("challengeOpponent", key);
+      this.waitingChallenge.set(key, player);
     });
 
     socket.on("gaveup", () => {

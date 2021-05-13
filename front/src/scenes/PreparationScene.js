@@ -43,6 +43,7 @@ class PreparationScene extends Scene {
     const middleButton = document.querySelector('[data-computer="middle"]');
     const hardButton = document.querySelector('[data-computer="hard"]');
     const randomButton = document.querySelector('[data-type="random"]');
+    const challengeButton = document.querySelector('[data-type="challenge"]');
 
     // при нажании на кнопку раставляем коробли в ручную
     this.removeEventListeners.push(
@@ -68,6 +69,12 @@ class PreparationScene extends Scene {
     this.removeEventListeners.push(
       addListener(randomButton, "click", () =>
         this.app.start("online", "random")
+      )
+    );
+
+    this.removeEventListeners.push(
+      addListener(challengeButton, "click", () =>
+        this.app.start("online", "challenge")
       )
     );
   }
@@ -153,11 +160,13 @@ class PreparationScene extends Scene {
       document.querySelector('[data-computer="middle"]').disabled = false;
       document.querySelector('[data-computer="hard"]').disabled = false;
       document.querySelector('[data-type="random"]').disabled = false;
+      document.querySelector('[data-type="challenge"]').disabled = false;
     } else {
       document.querySelector('[data-computer="simple"]').disabled = true;
       document.querySelector('[data-computer="middle"]').disabled = true;
       document.querySelector('[data-computer="hard"]').disabled = true;
       document.querySelector('[data-type="random"]').disabled = true;
+      document.querySelector('[data-type="challenge"]').disabled = true;
     }
   }
   // отвечает за случайную растановку кораблей

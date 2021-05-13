@@ -28,7 +28,7 @@ class OnlineScene extends Scene {
       div.textContent = message;
 
       const chat = document.querySelector(".app-messagges");
-      chat.insertBefore(div, chat.firstElementChild)
+      chat.insertBefore(div, chat.firstElementChild);
     });
 
     socket.on("addShot", ({ x, y, variant }) => {
@@ -56,6 +56,12 @@ class OnlineScene extends Scene {
       }
     });
 
+    socket.on("challengeOpponent", (key) => {
+      console.log(key);
+     history.pushState(null, null, `/${key}`)
+     alert('Первый кто пройдет по этой ссылке будет играть с вами:\n${location.href}')
+    });
+
     this.statusUpdate();
   }
 
@@ -71,7 +77,12 @@ class OnlineScene extends Scene {
         y: ship.y,
       }))
     );
-    socket.emit("findRandomOpponent");
+    console.log(variant);
+    if (variant === "random") {
+      socket.emit("findRandomOpponent");
+    } else if (variant === "challenge") {
+      socket.emit("challengeOpponent");
+    }
 
     const chat = document.querySelector(".app-chat");
     chat.classList.remove("hidden");
