@@ -73,7 +73,9 @@ module.exports = class PartyManager {
       }
       const key = getRandomString(20);
       socket.emit("challengeOpponent", key);
+      console.log(key);
       this.waitingChallenge.set(key, player);
+      
     });
 
     socket.on("gaveup", () => {
