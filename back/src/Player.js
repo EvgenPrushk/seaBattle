@@ -4,26 +4,14 @@ module.exports = class Player {
   socket = null;
   party = null;
   battlefield = new Battlefield();
+  sessionId = null;
 
   get ready() {
     return !this.battlefield.complete && !this.party && this.socket;
-    // if (!this.battlefield.complete) {
-    //   return false;
-    // }
-
-    // if (this.party) {
-    //   return false;
-    // }
-
-    // if (this.socket) {
-    //     return false;
-    // }
-
-    // return true;
   }
 
-  constructor(socket) {
-    this.socket = socket;
+  constructor(socket, sessionId) {
+    Object.assign(this, { socket, sessionId });
   }
 
   on(...args) {
@@ -31,9 +19,6 @@ module.exports = class Player {
       this.socket.on(...args);
     }
   }
-
-
-  
 
   emit(...args) {
     if (this.socket && this.socket.connected) {

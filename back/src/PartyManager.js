@@ -12,9 +12,19 @@ module.exports = class PartyManager {
 
   connection(socket) {
     //TODO: identify one user
-    const player = new Player(socket);
-    //add player in players
-    this.players.push(player);
+    const sessionId = socket.request.sessionID;
+    let player = this.players.find((player) => player.sessionID === sessionId);
+
+    // if player have => recconnection
+    if (player) {
+      player.socket.emit("recconnection");
+      player.socket.close();
+      player.socket = socket;
+    } else {
+      player = new Player(socket, sessionId);
+      //add player in players
+      this.players.push(player);
+    }
 
     const isFree = () => {
       if (this.waitingRandom.includes(player)) {
@@ -49,14 +59,13 @@ module.exports = class PartyManager {
       if (!isFree()) {
         return;
       }
-      // add player in party
+
       this.waitingRandom.push(player);
       player.emit("statusChange", "randomFinding");
 
       if (this.waitingRandom.length >= 2) {
         const [player1, player2] = this.waitingRandom.splice(0, 2);
         const party = new Party(player1, player2);
-        // add party in parties
         this.parties.push(party);
 
         const unsubcribe = party.subscribe(() => {
@@ -96,13 +105,13 @@ module.exports = class PartyManager {
         const index = this.waitingRandom.indexOf(player);
         this.waitingRandom.splice(index, 1);
       }
-  
+
       const values = Array.from(this.waitingChallenge.values());
       if (values.includes(player)) {
         const index = values.indexOf(player);
-        const keys = Array.from(this.waitingChallenge.keys())
+        const keys = Array.from(this.waitingChallenge.keys());
         const key = keys[index];
-        this.waitingChallenge.delete(key)
+        this.waitingChallenge.delete(key);
       }
     });
 
@@ -140,11 +149,10 @@ module.exports = class PartyManager {
     const values = Array.from(this.waitingChallenge.values());
     if (values.includes(player)) {
       const index = values.indexOf(player);
-      const keys = Array.from(this.waitingChallenge.keys())
+      const keys = Array.from(this.waitingChallenge.keys());
       const key = keys[index];
-      this.waitingChallenge.delete(key)
+      this.waitingChallenge.delete(key);
     }
-
   }
 
   addPlayer(player) {
