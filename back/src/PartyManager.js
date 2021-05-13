@@ -8,7 +8,7 @@ module.exports = class PartyManager {
   parties = new Map();
   // collection for add and remove players
   waitingRandom = [];
-  waitingChallenge = new Map;
+  waitingChallenge = new Map();
 
   connection(socket) {
     //TODO: identify one user
@@ -20,7 +20,7 @@ module.exports = class PartyManager {
       if (this.waitingRandom.includes(player)) {
         return false;
       }
-      const values =Array.from(this.waitingChallenge.values())
+      const values = Array.from(this.waitingChallenge.values());
       if (values.includes(player)) {
         return false;
       }
@@ -59,23 +59,31 @@ module.exports = class PartyManager {
         // add party in parties
         this.parties.push(party);
 
-        const unsubscribe = party.subscribe(() => {
+        const unsubcribe = party.subscribe(() => {
           this.removeParty(party);
-          unsubscribe();
+          unsubcribe();
         });
       }
     });
 
-    socket.on("challengeOpponent", () => {
-
+    socket.on("challengeOpponent", (key = "") => {
       if (!isFree()) {
         return;
       }
-      const key = getRandomString(20);
-      socket.emit("challengeOpponent", key);
-      console.log(key);
-      this.waitingChallenge.set(key, player);
-      
+
+      if (this.waitingChallenge.has(key)) {
+        const opponent = this.waitingChallenge.get(key);
+        this.waitingChallenge.delete(key);
+
+        const party = new Party(opponent, player);
+        this.parties.push(party);
+      } else {
+        key = getRandomString(20);
+        socket.emit("challengeOpponent", key);
+        console.log(key);
+
+        this.waitingChallenge.set(key, player);
+      }
     });
 
     socket.on("gaveup", () => {
@@ -143,7 +151,7 @@ module.exports = class PartyManager {
     return true;
   }
 
-  removeAllPlayers(player) {
+  removeAllPlayers() {
     // add copy all players
     const players = this.players.slice();
     // delete all players
@@ -151,7 +159,7 @@ module.exports = class PartyManager {
       this.removePlayer(player);
     }
 
-    return this.players.length;
+    return players.length;
   }
 
   addParty(party) {

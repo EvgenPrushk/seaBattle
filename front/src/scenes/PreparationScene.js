@@ -83,8 +83,8 @@ class PreparationScene extends Scene {
 
     this.removeEventListeners.push(
       addListener(takeChallengeButton, "click", () => {
-        const key =prompt("Ключ партии");
-        this.app.start("online", "challenge", key)
+        const key = prompt("Ключ партии");
+        this.app.start("online", "challenge", key);
       })
     );
   }
@@ -161,8 +161,8 @@ class PreparationScene extends Scene {
 
     // Врощаение
     if (this.draggedShip && mouse.delta) {
-      this.draggedShip.toggleDirection();
-    }
+			this.draggedShip.toggleDirection();
+		}
 
     //разблокировка кнопок
     if (player.complete) {

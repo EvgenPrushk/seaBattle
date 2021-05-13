@@ -58,14 +58,16 @@ class OnlineScene extends Scene {
 
     socket.on("challengeOpponent", (key) => {
       console.log(key);
-     history.pushState(null, null, `/${key}`)
-     alert(`Первый кто пройдет по этой ссылке будет играть с вами:\n${location.href}`)
+      history.pushState(null, null, `/${key}`);
+      alert(
+        `Первый кто пройдет по этой ссылке будет играть с вами:\n${location.href}`
+      );
     });
 
     this.statusUpdate();
   }
 
-  start(variant) {
+  start(variant, key = "") {
     const { socket, player } = this.app;
 
     socket.emit(
@@ -81,7 +83,7 @@ class OnlineScene extends Scene {
     if (variant === "random") {
       socket.emit("findRandomOpponent");
     } else if (variant === "challenge") {
-      socket.emit("challengeOpponent");
+      socket.emit("challengeOpponent", key);
     }
 
     const chat = document.querySelector(".app-chat");
@@ -105,12 +107,6 @@ class OnlineScene extends Scene {
 
     this.removeEventListeners = [];
 
-    this.removeEventListeners.push(
-      addListener(againButton, "click", () => {
-        this.app.start("preparation");
-      })
-    );
-
     const input = chat.querySelector("input");
     this.removeEventListeners.push(
       addListener(input, "keydown", (e) => {
@@ -120,6 +116,12 @@ class OnlineScene extends Scene {
           input.value = "";
           socket.emit("message", message);
         }
+      })
+    );
+    
+    this.removeEventListeners.push(
+      addListener(againButton, "click", () => {
+        this.app.start("preparation");
       })
     );
 
