@@ -5,7 +5,7 @@ const { getRandomString } = require("./additional");
 
 module.exports = class PartyManager {
   players = [];
-  parties = new Map();
+  parties = [];
   // collection for add and remove players
   waitingRandom = [];
   waitingChallenge = new Map();
