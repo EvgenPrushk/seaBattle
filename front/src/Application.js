@@ -32,7 +32,7 @@ class Application {
       window.close();
     });
 
-    socket.on("recconnection", () => {
+    socket.on("doubleConnection", () => {
       alert("Socket is close. You have second tab");
     });
 
