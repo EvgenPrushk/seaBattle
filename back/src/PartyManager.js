@@ -11,7 +11,9 @@ module.exports = class PartyManager {
   // collection for add and remove players
   waitingRandom = [];
   waitingChallenge = new Map();
+
   reconnections = new Map();
+
   connection(socket) {
     //TODO: identify one user
     const sessionId = socket.request.sessionID;
@@ -22,6 +24,7 @@ module.exports = class PartyManager {
       player.socket.emit("doubleConnection");
       player.socket.disconnect();
       player.socket = socket;
+      //recconnection player
       if (this.reconnections.has(player)) {
         clearTimeout(this.reconnections.get(player));
         this.reconnections.delete(player);

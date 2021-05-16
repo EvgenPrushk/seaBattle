@@ -29,11 +29,11 @@ class Application {
 
     socket.on("playerCount", (n) => {
       document.querySelector("[data-playersCount]").textContent = n;
-      window.close();
     });
 
     socket.on("doubleConnection", () => {
       alert("Socket is close. You have second tab");
+      document.body.classList.add("hedden");
     });
 
     requestAnimationFrame(() => this.tick());
