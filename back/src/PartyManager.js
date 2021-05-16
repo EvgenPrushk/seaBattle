@@ -20,6 +20,14 @@ module.exports = class PartyManager {
       player.socket.emit("doubleConnection");
       player.socket.disconnect();
       player.socket = socket;
+      if (this.reconnections.has(player)) {
+        clearTimeout(this.reconnections.get(player));
+        this.reconnections.delete(player);
+
+        if (player.party) {
+          player.party.reconnection(player);
+        }
+      }
     } else {
       player = new Player(socket, sessionId);
       //add player in players
@@ -213,7 +221,7 @@ module.exports = class PartyManager {
     return true;
   }
 
-  removeAllParties(party) {
+  removeAllparties() {
     // add copy all party
     const parties = this.parties.slice();
     // delete all parties
