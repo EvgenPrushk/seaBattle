@@ -3,13 +3,15 @@ const Party = require("./Party");
 const Ship = require("./Ship");
 const { getRandomString } = require("./additional");
 
+const RECONNECTION_TIMER = 5000;
+
 module.exports = class PartyManager {
   players = [];
   parties = [];
   // collection for add and remove players
   waitingRandom = [];
   waitingChallenge = new Map();
-
+  reconnections = new Map();
   connection(socket) {
     //TODO: identify one user
     const sessionId = socket.request.sessionID;
@@ -145,7 +147,17 @@ module.exports = class PartyManager {
     }
 
     if (player.party) {
-      player.party.gaveup(player);
+      const flag = setTimeout(() => {
+        this.reconnections.delete(player);
+
+        if (player.party) {
+          player.party.gaveup(player);
+        }
+
+        this.removePlayer(player);
+      }, RECONNECTION_TIMER);
+
+      this.reconnections.set(player, flag);
     }
 
     if (this.waitingRandom.includes(player)) {
