@@ -15,7 +15,7 @@ module.exports = class PartyManager {
   connection(socket) {
     //TODO: identify one user
     const sessionId = socket.request.sessionID;
-    let player = this.players.find((player) => player.sessionID === sessionId);
+    let player = this.players.find((player) => player.sessionId === sessionId);
 
     // if player have => recconnection
     if (player) {
