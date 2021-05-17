@@ -148,7 +148,7 @@ module.exports = class PartyManager {
     if (!player) {
       return;
     }
-
+    // delete  RECONNECTION_TIMER = 5c.
     if (player.party) {
       const flag = setTimeout(() => {
         this.reconnections.delete(player);
@@ -156,7 +156,7 @@ module.exports = class PartyManager {
         if (player.party) {
           player.party.gaveup(player);
         }
-
+        // delete player to server
         this.removePlayer(player);
       }, RECONNECTION_TIMER);
 

@@ -36,10 +36,16 @@ class Application {
       document.body.classList.add("hidden");
     });
 
-    // socket.on("reconnection", (ships) => {
-    //   player.clear();
-    //   for
-    // });
+    socket.on("reconnection", (ships) => {
+      player.clear();
+      // add parametrs ships
+      for (const { size, direction, x, y } of object) {
+        const ship = new ShipView(size, direction);
+        player.addShip(ship, x, y);
+      }
+
+      this.start("outline");
+    });
 
     requestAnimationFrame(() => this.tick());
   }

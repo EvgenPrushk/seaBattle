@@ -115,13 +115,13 @@ class Party extends Observer {
     );
 
     // dispatching the location of the shots
-    const Player1Shots = player1.battlefield.shots.map((shot) => ({
+    const Player1Shots = this.player1.battlefield.shots.map((shot) => ({
       x: shot.x,
       y: shot.y,
       variant: shot.variant,
     }));
 
-    const Player2Shots = player2.battlefield.shots.map((shot) => ({
+    const Player2Shots = this.player2.battlefield.shots.map((shot) => ({
       x: shot.x,
       y: shot.y,
       variant: shot.variant,
