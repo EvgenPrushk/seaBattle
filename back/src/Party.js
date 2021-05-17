@@ -101,8 +101,48 @@ class Party extends Observer {
     player1.emit("message", message);
     player2.emit("message", message);
   }
+
+  recconnection(player) {
+    // dispatching the location of the ship
+    player.emit(
+      "recconnection",
+      player.battlefield.ship.map((ship) => ({
+        size: ship.size,
+        direction: ship.direction,
+        x: ship.x,
+        y: ship.y,
+      }))
+    );
+
+    // dispatching the location of the shots
+    const Player1Shots = player1.battlefield.shots.map((shot) => ({
+      x: shot.x,
+      y: shot.y,
+      variant: shot.variant,
+    }));
+
+    const Player2Shots = player2.battlefield.shots.map((shot) => ({
+      x: shot.x,
+      y: shot.y,
+      variant: shot.variant,
+    }));
+
+    if (player === this.player1) {
+      player.emit("setShots", Player1Shots, Player2Shots);
+    } else {
+      player.emit("setShots", Player2Shots, Player1Shots);
+    }
+    // dispatching turn
+    player.emit("statusChange", "play");
+    player.emit("turnUpdate", this.turnPlayer === player);
+
+    if (!this.play) {
+      player.emit(
+        "statusChange",
+        player.battlefield.loser ? "loser" : "winner"
+      );
+    }
+  }
 }
 
 module.exports = Party;
-
-//02-21-43

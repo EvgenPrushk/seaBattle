@@ -33,8 +33,13 @@ class Application {
 
     socket.on("doubleConnection", () => {
       alert("Socket is close. You have second tab");
-      document.body.classList.add("hedden");
+      document.body.classList.add("hidden");
     });
+
+    // socket.on("reconnection", (ships) => {
+    //   player.clear();
+    //   for
+    // });
 
     requestAnimationFrame(() => this.tick());
   }
